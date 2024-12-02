@@ -20,9 +20,13 @@ public class UserService {
         userList.addAll(Arrays.asList(user1, user2));
     }
 
+    public List<User> getUserList() {
+        return userList;
+    }
+
     public Optional<User> getUser(Integer id) {
         return userList.stream()
-                .filter(user -> user.getId() == id)  // Usando '==' para comparar o id
+                .filter(user -> user.getId() == id)
                 .findFirst();
     }
 
@@ -31,17 +35,24 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(User user) {
-        for (int i = 0; i < userList.size(); i++) {
-            if (userList.get(i).getId() == user.getId()) {  // Usando '==' para comparar o id
-                userList.set(i, user);
-                return user;
-            }
-        }
-        return null; // Se não encontrar, retorna null
+    public Optional<User> updateUser(Integer id, User updatedUser) {
+        return userList.stream()
+                .filter(user -> user.getId() == id)
+                .findFirst()
+                .map(user -> {
+                    user.setName(updatedUser.getName());
+                    user.setEmail(updatedUser.getEmail());
+                    user.setSenha(updatedUser.getSenha());
+                    return user;
+                });
     }
 
-    public void deleteUser(Integer id) {
-        userList.removeIf(user -> user.getId() == id);  // Usando '==' para comparar o id
+    public boolean deleteUser(Integer id) {
+        return userList.removeIf(user -> user.getId() == id);
     }
+
+    public Optional<User> getUserByEmail(String email) {
+        return userList.stream().filter(user -> user.getEmail().equals(email)).findFirst();
+    }
+
 }

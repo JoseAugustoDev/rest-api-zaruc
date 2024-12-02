@@ -3,12 +3,14 @@ package com.example.rest_api_zaruc.api.controller;
 import com.example.rest_api_zaruc.api.model.User;
 import com.example.rest_api_zaruc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping
 public class UserController {
 
     private UserService userService;
@@ -18,23 +20,44 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/user")
     public Optional<User> getUser(@RequestParam Integer id) {
         return userService.getUser(id);
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.saveUser(user);  // Método para salvar o usuário (adicionado)
+    @PostMapping("/createUser")
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+
+        User saveUser = userService.saveUser(user);
+
+        return new ResponseEntity<>(saveUser, HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public User updateUser(@RequestBody User user) {
-        return userService.updateUser(user);  // Método para atualizar o usuário (adicionado)
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Integer id, @RequestBody User updatedUser) {
+
+        Optional<User> user = userService.updateUser(id, updatedUser);
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuário com ID " + id + " não encontrado.");
+        }
     }
 
-    @DeleteMapping
-    public void deleteUser(@RequestParam Integer id) {
-        userService.deleteUser(id);  // Método para excluir o usuário (adicionado)
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<?> deleteUser(@RequestParam Integer id) {
+
+        boolean isDeleted = userService.deleteUser(id);
+
+        if (isDeleted) {
+            return ResponseEntity.ok("Usuário com ID " + id + " foi excluído com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuário com ID " + id + " não encontrado.");
+        }
     }
+
+
 }
