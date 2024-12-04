@@ -5,15 +5,6 @@ public class User {
     private int id;
     private String name;
     private String email;
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
     private String senha;
 
     public User(int id, String name, String email, String senha) {
@@ -37,6 +28,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     public String getEmail() {

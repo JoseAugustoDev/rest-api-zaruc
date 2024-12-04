@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -23,6 +24,11 @@ public class UserController {
     @GetMapping("/user")
     public Optional<User> getUser(@RequestParam Integer id) {
         return userService.getUser(id);
+    }
+
+    @GetMapping("/AllUsers")
+    public List<User> getAllUsers() {
+        return userService.getUserList();
     }
 
     @PostMapping("/createUser")

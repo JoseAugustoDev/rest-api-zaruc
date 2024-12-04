@@ -1,6 +1,9 @@
 package com.example.rest_api_zaruc.service;
 
+import com.example.rest_api_zaruc.api.model.CustomUserDetails;
 import com.example.rest_api_zaruc.api.model.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,8 +54,13 @@ public class UserService {
         return userList.removeIf(user -> user.getId() == id);
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userList.stream().filter(user -> user.getEmail().equals(email)).findFirst();
+    public UserDetails getUserByLogin(String login) {
+        return userList
+                .stream()
+                .filter(user -> user.getEmail().equals(login))
+                .findFirst()
+                .map(CustomUserDetails::new)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com este login: " + login));
     }
 
 }
